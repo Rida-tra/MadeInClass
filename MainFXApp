@@ -1,0 +1,105 @@
+package com.example.reda;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+
+public class MainFXApp extends Application {
+    // بناء البيانات يدوياً (بدون وراثة، فقط كائنات وربط)
+    private Subject math = new Subject("Mathematics");
+    private Teacher leadTeacher = new Teacher("Ahmed", math);
+    private Classroom myClass = new Classroom("Grade 10-A", leadTeacher);
+
+    private ListView<Student> studentListView = new ListView<>();
+
+    @Override
+    public void start(Stage primaryStage) {
+        // معلومات الصف (Label)
+        Label infoLabel = new Label("Class: " + myClass.getClassName() +
+                " | Teacher: " + myClass.getTeacher().getName() +
+                " | Subject: " + myClass.getTeacher().getSubject().getName());
+
+        // حقول إضافة طالب
+        TextField idInput = new TextField(); idInput.setPromptText("Student ID");
+        TextField nameInput = new TextField(); nameInput.setPromptText("Student Name");
+        Button addBtn = new Button("Enroll Student");
+        Button deleteBtn = new Button("Remove Selected");
+
+        // العمليات
+       /* addBtn.setOnAction(e -> {
+            int id = Integer.parseInt(idInput.getText());
+            Student s = new Student(id, nameInput.getText());
+            myClass.addStudent(s); // إضافة الطالب للكائن
+            updateUI(); // تحديث الواجهة
+            idInput.clear(); nameInput.clear();
+        });*/
+        addBtn.setOnAction(e -> {
+            try {
+                int id = Integer.parseInt(idInput.getText());
+
+                if (id < 0) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Invalid ID");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Student ID cannot be negative. Please enter a positive number.");
+                    alert.showAndWait();
+                    return; // Stop execution so we don't try to create the student
+                }
+
+                Student s = new Student(id, nameInput.getText());
+                // 1. Check if the student ID already exists
+                if (myClass.addStudent(s)) {
+
+                    updateUI();
+
+                    idInput.clear();
+                    nameInput.clear();
+
+                } else {
+                    // 2. Show the Warning Popup
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Duplicate Entry");
+                    alert.setHeaderText(null);
+                    alert.setContentText("Student with ID " + id + " already exists!");
+                    alert.showAndWait();
+                }
+            } catch (NumberFormatException ex) {
+                // Handle case where ID is not a valid number
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter a valid numeric ID.");
+                alert.showAndWait();
+            }
+        });
+        deleteBtn.setOnAction(e -> {
+            Student selected = studentListView.getSelectionModel().getSelectedItem();
+            if (selected != null) {
+                myClass.removeStudent(selected.getID());
+                updateUI();
+            }
+        });
+
+        // تصميم الواجهة
+        HBox inputs = new HBox(10, idInput, nameInput, addBtn);
+        VBox root = new VBox(15, infoLabel, studentListView, deleteBtn, inputs);
+        root.setPadding(new Insets(20));
+
+        primaryStage.setScene(new Scene(root, 500, 400));
+        primaryStage.setTitle("School Management System");
+        primaryStage.show();
+    }
+
+    private void updateUI() {
+        studentListView.getItems().setAll(myClass.getStudents());
+    }
+
+    public static void main(String[] args) { launch(args); }
+}
