@@ -7,12 +7,13 @@ public class SudokuNum2d {
 
     static void main() {
         int[][] arr = dashboard();
-        fillDashboardTest(arr);
+        //fillDashboardTest(arr);
+        fillDashboard(arr);
         //printFullDashboard(arr);
         System.out.println();
         //getDashboardRow(arr);
-        printFullDashboard(arr);
-        printOneRow(arr, 1);
+        printFullDashboardRowByRow(arr);
+       // printOneRow(arr, 1);
     }
 
     private static void printOneRow(int[][] arr, int row) {
@@ -20,7 +21,7 @@ public class SudokuNum2d {
         //todo: treat the game as separate rows which are their own seperate array that span from left to right instead of a grid with individual cells
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                if (i%3==0) {
+                if (i%3==0 + (row * 3)) {
                     arrRow[j]=arr[j][0];
                 }
             }
@@ -50,6 +51,19 @@ public class SudokuNum2d {
             printRowDashboard(arr, i);
             System.out.println("--------------------------------------------------------");
             System.out.println("--------------------------------------------------------");
+        }
+    } private static void printFullDashboardRowByRow(int[][] arr) {
+        System.out.println("--------------------------------------------------------");
+        System.out.println("--------------------------------------------------------");
+        for (int i = 0; i < 9; i++) {
+            if(i%3==0)
+                System.out.println("--------------------------------------------------------");
+            for (int j = 0; j < 9; j++) {
+                if(j%3==0) System.out.print("||\t");
+                System.out.print(arr[i][j]+"\t");
+            }
+            System.out.println();
+
         }
     }
 
