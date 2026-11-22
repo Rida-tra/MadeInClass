@@ -81,14 +81,37 @@ public class SudokuNum2d {
         }
     }
 
-    private static void fillDashboard(int[][] dashboard) {
-        for (int i = 0; i < 9; i++) {
+    private static int[][] fillDashboard(int[][] dashboard) {
+        /*for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 dashboard[j][i] = random.nextInt(1, 9);
+
             }
+
+
             //dashboard[0][i] = random.nextInt(0, 9);
+        }*/
+        for (int i = 0; i < dashboard.length; i++) {
+            int num = random.nextInt(1, 10);
+            while(checkIfExist(dashboard,num)){
+
+                num = random.nextInt(1, 10);
+
+            }
+            dashboard[i][j]=num;
+
         }
+        return dashboard;
     }
+    private static boolean checkIfExist(int[][] arr, int num) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i][0] == num){
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static void fillDashboardTest(int[][] dashboard) {
         dashboard[0]=new int[]{1,1,1,1,1,1,1,1,1};
         dashboard[1]=new int[]{2,2,2,2,2,2,2,2,2};
